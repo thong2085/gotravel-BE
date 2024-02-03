@@ -1,5 +1,5 @@
 const Hotel = require("../models/HotelModel");
-const BookRoom = require("../models/BookRoomModel");
+const BookRoom = require("../models/bookRoomModel");
 const nodemailer = require("nodemailer");
 
 const createHotel = async (req, res) => {
