@@ -24,7 +24,7 @@
     "gotravel"
   ],
   "engines": {
-    "node": "18.18.0"
+    "node": "20.4.0"
   },
   "description": ""
 }
