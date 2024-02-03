@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_VERSION=18.18.0 nodemon src/index.js"
+    "start": "nodemon src/index.js"
   },
   "author": "thong",
   "license": "ISC",
