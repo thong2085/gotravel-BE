@@ -1,6 +1,6 @@
 const Hotel = require("../models/HotelModel");
 const BookRoom = require("../models/bookRoomModel");
-const nodemailer = require("nodemailer");
+const bookRoomService = require("../services/bookRoomService");
 
 const createHotel = async (req, res) => {
   try {
@@ -132,47 +132,49 @@ const getAllHotels = async (req, res) => {
 
 const bookRoom = async (req, res) => {
   try {
-    // Lấy dữ liệu từ request body
     const {
       hotelId,
-      hotelName,
       userId,
+      hotelName,
       userName,
       address,
       phoneNumber,
       email,
       numberOfRooms,
       bookingDays,
+      text,
     } = req.body;
 
-    // Tạo một đối tượng BookRoom mới
-    const booking = new BookRoom({
+    const newBooking = await BookRoom.create({
       hotelId,
-      hotelName,
       userId,
+      hotelName,
       userName,
       address,
       phoneNumber,
       email,
       numberOfRooms,
       bookingDays,
+      text,
     });
-
-    // Lưu đối tượng vào cơ sở dữ liệu
-    const result = await booking.save();
-
-    // Trả về kết qu.name,
-    res.status(201).json({
-      status: "success",
-      message: "Booking successful",
-      data: result,
-    });
+    if (
+      email ||
+      address ||
+      phoneNumber ||
+      numberOfRooms ||
+      bookingDays ||
+      text
+    ) {
+      const response = await bookRoomService(email);
+      return res.status(201).json({
+        status: "success",
+        message: "Booking successful",
+        data: newBooking,
+        response,
+      });
+    }
   } catch (error) {
-    res.status(500).json({
-      status: "error",
-      message: "Internal server error",
-      error: error.message,
-    });
+    console.error("BookRoom Failed:", error);
   }
 };
 
