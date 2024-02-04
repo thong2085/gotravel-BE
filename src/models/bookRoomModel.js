@@ -39,6 +39,10 @@ const bookRoomSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  text: {
+    type: String,
+    required: true,
+  },
 });
 
 const BookRoom = mongoose.model("BookRoom", bookRoomSchema);
