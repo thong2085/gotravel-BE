@@ -135,20 +135,12 @@ const getAllRestaurants = async (req, res) => {
 
 const orderFood = async (req, res) => {
   try {
-    const {
-      restaurantId,
-      userId,
-      restaurantName,
-      address,
-      userName,
-      phoneNumber,
-      email,
-      text,
-    } = req.body;
+    const restaurantId = req.params.id;
+    const { restaurantName, address, userName, phoneNumber, email, text } =
+      req.body;
 
     const newOrder = await Order.create({
       restaurantId,
-      userId,
       restaurantName,
       address,
       userName,
