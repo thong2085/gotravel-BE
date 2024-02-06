@@ -1,6 +1,6 @@
 const Tour = require("../models/TourModel");
-const User = require("../models/UserModel");
 const BookTour = require("../models/bookTourModel");
+const bookTourService = require("../services/bookTourService");
 
 const createTour = async (req, res) => {
   try {
@@ -134,30 +134,28 @@ const getAllTours = async (req, res) => {
 
 const bookTour = async (req, res) => {
   try {
-    const { tourId, userId, tourName, userName, phoneNumber, email } = req.body;
+    const tourId = req.params.id;
+    const { tourName, userName, phoneNumber, email, text } = req.body;
 
-    // Kiểm tra xem tour có tồn tại không
-    const tour = await Tour.findById(tourId);
-    if (!tour) {
-      return res.status(404).json({ message: "Tour not found" });
-    }
-
-    // Tạo một đối tượng mới từ model BookTour
-    const newBookTour = new BookTour({
+    const newBookTour = await BookTour.create({
       tourId,
-      userId,
-      tourName: tour.name,
+      tourName,
       userName,
       phoneNumber,
       email,
+      text,
     });
+    bookTourService;
 
-    // Lưu đối tượng vào cơ sở dữ liệu
-    await newBookTour.save();
-
-    return res
-      .status(200)
-      .json({ message: "Booking successful", bookingDetails: newBookTour });
+    if (email || address || phoneNumber || text) {
+      const response = await bookTourService(email);
+      return res.status(201).json({
+        status: "success",
+        message: "BookTour successful",
+        data: newBookTour,
+        response,
+      });
+    }
   } catch (error) {
     console.error("Error booking tour:", error);
     return res.status(500).json({ message: "Internal Server Error" });

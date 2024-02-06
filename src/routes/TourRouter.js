@@ -10,6 +10,6 @@ router.delete("/delete-tours/:id", authMiddleware, tourController.deleteTour);
 router.get("/get-tours/:id", tourController.getTour);
 router.get("/get-all-tours", tourController.getAllTours);
 
-router.post("/book-tour", authUserMiddleware, tourController.bookTour);
+router.post("/book-tour/:id", authUserMiddleware, tourController.bookTour);
 
 module.exports = router;

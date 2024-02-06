@@ -6,11 +6,6 @@ const bookTourSchema = new mongoose.Schema({
     ref: "Tour",
     required: true,
   },
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
   tourName: {
     type: String,
     required: true,
@@ -24,6 +19,10 @@ const bookTourSchema = new mongoose.Schema({
     required: true,
   },
   email: {
+    type: String,
+    required: true,
+  },
+  text: {
     type: String,
     required: true,
   },

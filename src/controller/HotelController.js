@@ -132,9 +132,9 @@ const getAllHotels = async (req, res) => {
 
 const bookRoom = async (req, res) => {
   try {
+    const hotelId = req.params.id;
+
     const {
-      hotelId,
-      userId,
       hotelName,
       userName,
       address,
@@ -147,7 +147,6 @@ const bookRoom = async (req, res) => {
 
     const newBooking = await BookRoom.create({
       hotelId,
-      userId,
       hotelName,
       userName,
       address,
