@@ -22,6 +22,6 @@ router.delete(
 router.get("/get-restaurants/:id", restaurantController.getRestaurant);
 router.get("/get-all-restaurants", restaurantController.getAllRestaurants);
 
-router.post("/order-food", authUserMiddleware, restaurantController.orderFood);
+router.post("/order-food", restaurantController.orderFood);
 
 module.exports = router;

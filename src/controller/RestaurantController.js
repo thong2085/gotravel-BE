@@ -1,5 +1,6 @@
 const Order = require("../models/OrderModel");
 const Restaurant = require("../models/RestaurantModel");
+const oderFoodService = require("../services/oderFoodService");
 
 const createRestaurant = async (req, res) => {
   try {
@@ -142,9 +143,10 @@ const orderFood = async (req, res) => {
       userName,
       phoneNumber,
       email,
+      text,
     } = req.body;
 
-    const newOrder = new Order({
+    const newOrder = await Order.create({
       restaurantId,
       userId,
       restaurantName,
@@ -152,11 +154,17 @@ const orderFood = async (req, res) => {
       userName,
       phoneNumber,
       email,
+      text,
     });
-
-    const savedOrder = await newOrder.save();
-
-    res.status(201).json(savedOrder);
+    if (email || address || phoneNumber || text) {
+      const response = await oderFoodService(email);
+      return res.status(201).json({
+        status: "success",
+        message: "Oder successful",
+        data: newOrder,
+        response,
+      });
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
