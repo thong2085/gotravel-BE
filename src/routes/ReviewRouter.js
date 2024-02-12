@@ -4,7 +4,7 @@ const reviewController = require("../controller/ReviewController");
 const { authMiddleware, authUserMiddleware } = require("../middleware/auth");
 
 // Thêm review mới
-router.post("/:entityId", reviewController.addReview);
+router.post("/add/:entityId", reviewController.addReview);
 
 // Lấy danh sách reviews theo entity ID
 router.get("/:entityId", reviewController.getReviewsByEntity);

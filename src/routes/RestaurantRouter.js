@@ -28,4 +28,10 @@ router.post(
   restaurantController.orderFood,
 );
 
+router.get(
+  "/get-all-orders",
+  authMiddleware,
+  restaurantController.getAllOrders,
+);
+
 module.exports = router;

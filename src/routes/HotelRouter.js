@@ -15,5 +15,10 @@ router.get("/get-hotels/:id", hotelController.getHotel);
 router.get("/get-all-hotels", hotelController.getAllHotels);
 
 router.post("/book-room/:id", authUserMiddleware, hotelController.bookRoom);
+router.get(
+  "/get-all-book-rooms",
+  authMiddleware,
+  hotelController.getAllBookRooms,
+);
 
 module.exports = router;

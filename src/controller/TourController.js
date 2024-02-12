@@ -135,7 +135,10 @@ const getAllTours = async (req, res) => {
 const bookTour = async (req, res) => {
   try {
     const tourId = req.params.id;
+    const tour = await Tour.findById(tourId);
     const { tourName, userName, phoneNumber, email, text } = req.body;
+
+    const countPrice = tour.price;
 
     const newBookTour = await BookTour.create({
       tourId,
@@ -144,6 +147,7 @@ const bookTour = async (req, res) => {
       phoneNumber,
       email,
       text,
+      price: countPrice,
     });
     bookTourService;
 
@@ -162,6 +166,24 @@ const bookTour = async (req, res) => {
   }
 };
 
+const getAllBookTours = async (req, res) => {
+  try {
+    const allBookTours = await BookTour.find();
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        bookTours: allBookTours,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createTour,
   updateTour,
@@ -169,4 +191,5 @@ module.exports = {
   getTour,
   getAllTours,
   bookTour,
+  getAllBookTours,
 };
