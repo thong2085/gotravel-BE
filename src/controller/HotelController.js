@@ -4,7 +4,8 @@ const bookRoomService = require("../services/bookRoomService");
 
 const createHotel = async (req, res) => {
   try {
-    const { name, images, classify, address, info, roomCount } = req.body;
+    const { name, images, classify, address, info, roomCount, price } =
+      req.body;
 
     const newHotel = await Hotel.create({
       name,
@@ -13,6 +14,7 @@ const createHotel = async (req, res) => {
       address,
       info,
       roomCount,
+      price,
     });
 
     res.status(201).json({
@@ -133,6 +135,7 @@ const getAllHotels = async (req, res) => {
 const bookRoom = async (req, res) => {
   try {
     const hotelId = req.params.id;
+    const hotel = await Hotel.findById(hotelId);
 
     const {
       hotelName,
@@ -143,7 +146,10 @@ const bookRoom = async (req, res) => {
       numberOfRooms,
       bookingDays,
       text,
+      price,
     } = req.body;
+
+    const countPrice = hotel.price * numberOfRooms * bookingDays;
 
     const newBooking = await BookRoom.create({
       hotelId,
@@ -155,6 +161,7 @@ const bookRoom = async (req, res) => {
       numberOfRooms,
       bookingDays,
       text,
+      price: countPrice,
     });
     if (
       email ||
@@ -177,6 +184,24 @@ const bookRoom = async (req, res) => {
   }
 };
 
+const getAllBookRooms = async (req, res) => {
+  try {
+    const allBookRooms = await BookRoom.find();
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        bookRooms: allBookRooms,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createHotel,
   updateHotel,
@@ -184,4 +209,5 @@ module.exports = {
   getHotel,
   getAllHotels,
   bookRoom,
+  getAllBookRooms,
 };

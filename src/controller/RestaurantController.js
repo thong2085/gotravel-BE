@@ -136,9 +136,15 @@ const getAllRestaurants = async (req, res) => {
 const orderFood = async (req, res) => {
   try {
     const restaurantId = req.params.id;
+    const restaurant = await Restaurant.findById(restaurantId);
     const { restaurantName, address, userName, phoneNumber, email, text } =
       req.body;
 
+    let countPrice = 0;
+
+    for (const menuItem of restaurant.menu) {
+      countPrice += menuItem.price;
+    }
     const newOrder = await Order.create({
       restaurantId,
       restaurantName,
@@ -147,6 +153,7 @@ const orderFood = async (req, res) => {
       phoneNumber,
       email,
       text,
+      price: countPrice,
     });
     if (email || address || phoneNumber || text) {
       const response = await oderFoodService(email);
@@ -161,6 +168,23 @@ const orderFood = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const getAllOrders = async (req, res) => {
+  try {
+    const allOrderFoods = await Order.find();
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        orderFoods: allOrderFoods,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   createRestaurant,
@@ -169,4 +193,5 @@ module.exports = {
   getRestaurant,
   getAllRestaurants,
   orderFood,
+  getAllOrders,
 };
