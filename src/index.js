@@ -10,7 +10,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "https://gotravel-fe.vercel.app",
   credentials: true,
 };
 app.use(cors(corsOptions));
