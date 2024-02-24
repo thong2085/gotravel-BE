@@ -57,7 +57,35 @@ const getReviewsByEntity = async (req, res) => {
   }
 };
 
+const getTotalVotes = async (req, res) => {
+  try {
+    // Tính tổng số vote từ rating của tất cả các review
+    const totalVotes = await Review.aggregate([
+      {
+        $group: {
+          _id: "$entityId", // Chỉ rõ trường entityId ở đây
+          total: { $sum: "$rating" },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$total" }, // Tính tổng tất cả các total của các entityId
+        },
+      },
+    ]);
+
+    // Lấy kết quả từ mảng totalVotes
+    const result = totalVotes.length > 0 ? totalVotes[0].total : 0;
+
+    res.json({ totalVotes: result });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   addReview,
   getReviewsByEntity,
+  getTotalVotes,
 };
