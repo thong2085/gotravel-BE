@@ -1,6 +1,8 @@
 const Tour = require("../models/TourModel");
+const User = require("../models/UserModel");
 const BookTour = require("../models/bookTourModel");
 const bookTourService = require("../services/bookTourService");
+const io = require("socket.io-client");
 
 const createTour = async (req, res) => {
   try {
@@ -132,6 +134,19 @@ const getAllTours = async (req, res) => {
   }
 };
 
+const sendNotification = async (notificationData) => {
+  // Kết nối đến server websocket
+  const socket = io("http://localhost:3000");
+
+  const user = await User.find();
+  // Gửi thông báo qua websocket
+  if (user?.isAdmin) {
+    socket.emit("notification", notificationData);
+  }
+
+  // Đóng kết nối websocket
+  socket.close();
+};
 const bookTour = async (req, res) => {
   try {
     const tourId = req.params.id;
@@ -150,6 +165,13 @@ const bookTour = async (req, res) => {
       price: countPrice,
     });
     bookTourService;
+
+    // Gửi thông báo
+    const notificationData = {
+      type: "bookTour",
+      message: "New tour booking",
+    };
+    await sendNotification(notificationData);
 
     if (email || address || phoneNumber || text) {
       const response = await bookTourService(email);

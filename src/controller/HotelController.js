@@ -1,6 +1,8 @@
+const User = require("../models/UserModel");
 const Hotel = require("../models/HotelModel");
 const BookRoom = require("../models/bookRoomModel");
 const bookRoomService = require("../services/bookRoomService");
+const io = require("socket.io-client");
 
 const createHotel = async (req, res) => {
   try {
@@ -132,6 +134,21 @@ const getAllHotels = async (req, res) => {
   }
 };
 
+const sendNotification = async (notificationData) => {
+  // Kết nối đến server websocket
+  const socket = io("http://localhost:3000");
+
+  const user = await User.find();
+
+  // Gửi thông báo qua websocket
+  if (user?.isAdmin) {
+    socket.emit("notification", notificationData);
+  }
+
+  // Đóng kết nối websocket
+  socket.close();
+};
+
 const bookRoom = async (req, res) => {
   try {
     const hotelId = req.params.id;
@@ -163,6 +180,12 @@ const bookRoom = async (req, res) => {
       text,
       price: countPrice,
     });
+    // Gửi thông báo
+    const notificationData = {
+      type: "bookRoom",
+      message: "New hotel booking",
+    };
+    await sendNotification(notificationData);
     if (
       email ||
       address ||
@@ -172,6 +195,7 @@ const bookRoom = async (req, res) => {
       text
     ) {
       const response = await bookRoomService(email);
+
       return res.status(201).json({
         status: "success",
         message: "Booking successful",

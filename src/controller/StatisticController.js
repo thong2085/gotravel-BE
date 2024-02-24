@@ -68,19 +68,19 @@ const getDailyRevenue = async (req, res) => {
 
     const dailyRevenue = {
       tourRevenue: {
-        totalRevenue: tourRevenue.length ? tourRevenue[0].totalRevenue : 0,
+        totalTourRevenue: tourRevenue.length ? tourRevenue[0].totalRevenue : 0,
         _id: tourRevenue.length ? tourRevenue[0]._id : [],
         tourName: tourRevenue.length ? tourRevenue[0].tourNames : [""],
         userNames: tourRevenue.length ? tourRevenue[0].userNames : [""],
       },
       roomRevenue: {
-        totalRevenue: roomRevenue.length ? roomRevenue[0].totalRevenue : 0,
+        totalRoomRevenue: roomRevenue.length ? roomRevenue[0].totalRevenue : 0,
         _id: roomRevenue.length ? roomRevenue[0]._id : [],
         hotelNames: roomRevenue.length ? roomRevenue[0].hotelNames : [""],
         userNames: roomRevenue.length ? roomRevenue[0].userNames : [""],
       },
       foodRevenue: {
-        totalRevenue: foodRevenue.length ? foodRevenue[0].totalRevenue : 0,
+        totalFoodRevenue: foodRevenue.length ? foodRevenue[0].totalRevenue : 0,
         _id: foodRevenue.length ? foodRevenue[0]._id : [],
         restaurantNames: foodRevenue.length ? foodRevenue[0].userNames : [""],
         userNames: foodRevenue.length ? foodRevenue[0].userNames : [""],
