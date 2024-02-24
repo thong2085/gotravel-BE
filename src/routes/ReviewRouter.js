@@ -9,6 +9,6 @@ router.post("/add/:entityId", reviewController.addReview);
 // Lấy danh sách reviews theo entity ID
 router.get("/:entityId", reviewController.getReviewsByEntity);
 
-router.get("/totalVotes", reviewController.getTotalVotes);
+router.get("/total-votes/:id", reviewController.getTotalVotes);
 
 module.exports = router;
