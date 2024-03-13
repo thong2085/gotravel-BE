@@ -192,7 +192,15 @@ const bookRoom = async (req, res) => {
     } = req.body;
 
     const countPrice = hotel.price * numberOfRooms * bookingDays;
-
+    // Kiểm tra số lượng phòng đặt không vượt quá số lượng phòng có sẵn
+    if (numberOfRooms > hotel.roomCount) {
+      return res.status(400).json({
+        status: "error",
+        message: "Number of rooms exceeds available rooms",
+      });
+    }
+    // Cập nhật số lượng phòng còn lại trong khách sạn
+    hotel.roomCount -= numberOfRooms;
     const newBooking = await BookRoom.create({
       hotelId,
       hotelName,
