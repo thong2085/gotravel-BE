@@ -4,6 +4,7 @@ const HotelRouter = require("./HotelRouter");
 const RestaurantRouter = require("./RestaurantRouter");
 const ReviewRouter = require("./ReviewRouter");
 const StatisticsRouter = require("./StatisticsRouter");
+const ExportRouter = require("./ExportRouter");
 
 const routes = (app) => {
   app.use("/api/user", UserRouter);
@@ -12,6 +13,7 @@ const routes = (app) => {
   app.use("/api/restaurant", RestaurantRouter);
   app.use("/api/review", ReviewRouter);
   app.use("/api/statistics", StatisticsRouter);
+  app.use("/api/export", ExportRouter);
 };
 
 module.exports = routes;

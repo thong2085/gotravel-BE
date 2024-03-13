@@ -3,6 +3,8 @@ const Restaurant = require("../models/RestaurantModel");
 const User = require("../models/UserModel");
 const oderFoodService = require("../services/oderFoodService");
 const io = require("socket.io-client");
+const Review = require("../models/ReviewModel");
+const mongoose = require("mongoose");
 
 const createRestaurant = async (req, res) => {
   try {
@@ -93,6 +95,25 @@ const updateRestaurant = async (req, res) => {
 const getRestaurant = async (req, res) => {
   try {
     const restaurantId = req.params.id;
+    const totalVotes = await Review.aggregate([
+      {
+        $match: {
+          entityId: new mongoose.Types.ObjectId(restaurantId),
+        },
+      },
+      {
+        $group: {
+          _id: "$entityId",
+          totalRating: { $sum: "$rating" },
+          totalReviews: { $sum: 1 },
+        },
+      },
+    ]);
+
+    let averageRating = 0;
+    if (totalVotes.length > 0) {
+      averageRating = totalVotes[0].totalRating / totalVotes[0].totalReviews;
+    }
 
     const restaurant = await Restaurant.findById(restaurantId);
 
@@ -106,7 +127,10 @@ const getRestaurant = async (req, res) => {
     res.status(200).json({
       status: "success",
       data: {
-        restaurant: restaurant,
+        restaurant: {
+          ...restaurant.toObject(),
+          totalVotes: Math.round(averageRating), // Trả về trung bình rating được làm tròn
+        },
       },
     });
   } catch (err) {

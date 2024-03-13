@@ -3,6 +3,8 @@ const User = require("../models/UserModel");
 const BookTour = require("../models/bookTourModel");
 const bookTourService = require("../services/bookTourService");
 const io = require("socket.io-client");
+const Review = require("../models/ReviewModel");
+const mongoose = require("mongoose");
 
 const createTour = async (req, res) => {
   try {
@@ -87,6 +89,24 @@ const deleteTour = async (req, res) => {
 const getTour = async (req, res) => {
   try {
     const tourId = req.params.id;
+    const totalVotes = await Review.aggregate([
+      {
+        $match: {
+          entityId: new mongoose.Types.ObjectId(tourId),
+        },
+      },
+      {
+        $group: {
+          _id: "$entityId",
+          totalRating: { $sum: "$rating" },
+          totalReviews: { $sum: 1 },
+        },
+      },
+    ]);
+    let averageRating = 0;
+    if (totalVotes.length > 0) {
+      averageRating = totalVotes[0].totalRating / totalVotes[0].totalReviews;
+    }
     if (!tourId) {
       return res.status(200).json({
         status: "ERR",
@@ -105,7 +125,10 @@ const getTour = async (req, res) => {
     res.status(200).json({
       status: "success",
       data: {
-        tour: tour,
+        tour: {
+          ...tour.toObject(),
+          totalVotes: Math.round(averageRating), // Trả về trung bình rating được làm tròn
+        },
       },
     });
   } catch (err) {
