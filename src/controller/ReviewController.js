@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const Review = require("../models/ReviewModel");
 
 // Thêm review mới
@@ -58,42 +57,7 @@ const getReviewsByEntity = async (req, res) => {
   }
 };
 
-const getTotalVotes = async (req, res) => {
-  try {
-    const entityId = new mongoose.Types.ObjectId(req.params.id);
-
-    // Tính tổng số vote và số lượng đánh giá từ rating của tất cả các review có entityId bằng req.params.id
-    const totalVotes = await Review.aggregate([
-      {
-        $match: {
-          entityId: entityId, // Sử dụng entityId như làm biến để so khớp với req.params.id
-        },
-      },
-      {
-        $group: {
-          _id: "$entityId", // Chỉ rõ trường entityId ở đây
-          totalRating: { $sum: "$rating" },
-          totalReviews: { $sum: 1 }, // Đếm số lượng đánh giá
-        },
-      },
-    ]);
-
-    // Lấy kết quả từ mảng totalVotes và tính tổng số vote chia cho số lượng đánh giá
-    let result = 0;
-    if (totalVotes.length > 0) {
-      const averageRating =
-        totalVotes[0].totalRating / totalVotes[0].totalReviews;
-      result = Math.round(averageRating);
-    }
-
-    res.json({ totalVotes: result });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 module.exports = {
   addReview,
   getReviewsByEntity,
-  getTotalVotes,
 };

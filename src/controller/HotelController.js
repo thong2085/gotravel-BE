@@ -3,6 +3,8 @@ const Hotel = require("../models/HotelModel");
 const BookRoom = require("../models/bookRoomModel");
 const bookRoomService = require("../services/bookRoomService");
 const io = require("socket.io-client");
+const Review = require("../models/ReviewModel");
+const mongoose = require("mongoose");
 
 const createHotel = async (req, res) => {
   try {
@@ -93,6 +95,26 @@ const getHotel = async (req, res) => {
   try {
     const hotelId = req.params.id;
 
+    const totalVotes = await Review.aggregate([
+      {
+        $match: {
+          entityId: new mongoose.Types.ObjectId(hotelId),
+        },
+      },
+      {
+        $group: {
+          _id: "$entityId",
+          totalRating: { $sum: "$rating" },
+          totalReviews: { $sum: 1 },
+        },
+      },
+    ]);
+
+    let averageRating = 0;
+    if (totalVotes.length > 0) {
+      averageRating = totalVotes[0].totalRating / totalVotes[0].totalReviews;
+    }
+
     const hotel = await Hotel.findById(hotelId);
 
     if (!hotel) {
@@ -105,7 +127,10 @@ const getHotel = async (req, res) => {
     res.status(200).json({
       status: "success",
       data: {
-        hotel: hotel,
+        hotel: {
+          ...hotel.toObject(),
+          totalVotes: Math.round(averageRating), // Trả về trung bình rating được làm tròn
+        },
       },
     });
   } catch (err) {
