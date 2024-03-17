@@ -24,7 +24,7 @@ router.get("/get-all-restaurants", restaurantController.getAllRestaurants);
 
 router.post(
   "/order-food/:id",
-  authUserMiddleware,
+  
   restaurantController.orderFood,
 );
 
