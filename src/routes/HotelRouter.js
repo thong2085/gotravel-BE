@@ -14,7 +14,7 @@ router.delete(
 router.get("/get-hotels/:id", hotelController.getHotel);
 router.get("/get-all-hotels", hotelController.getAllHotels);
 
-router.post("/book-room/:id", authUserMiddleware, hotelController.bookRoom);
+router.post("/book-room/:id",  hotelController.bookRoom);
 router.get(
   "/get-all-book-rooms",
   authMiddleware,
